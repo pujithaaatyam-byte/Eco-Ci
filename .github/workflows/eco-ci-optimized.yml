@@ -1,0 +1,80 @@
+name: Eco CI Optimized (Efficient Pipeline)
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  optimized-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Start Eco CI Measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@v4
+        with:
+          task: start-measurement
+          send-data: false
+        continue-on-error: true
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js with npm Dependency Caching
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Fast Dependency Installation (npm ci from cache)
+        run: npm ci
+
+      - name: Measure Dependency Installation
+        uses: green-coding-solutions/eco-ci-energy-estimation@v4
+        with:
+          task: get-measurement
+          label: 'install-dependencies'
+          send-data: false
+        continue-on-error: true
+
+      - name: Run ESLint Code Quality Verification
+        run: npm run lint
+
+      - name: Measure Linting Stage
+        uses: green-coding-solutions/eco-ci-energy-estimation@v4
+        with:
+          task: get-measurement
+          label: 'linting'
+          send-data: false
+        continue-on-error: true
+
+      - name: Run Streamlined Vitest Unit Tests
+        run: npm run test
+
+      - name: Measure Testing Stage
+        uses: green-coding-solutions/eco-ci-energy-estimation@v4
+        with:
+          task: get-measurement
+          label: 'testing'
+          send-data: false
+        continue-on-error: true
+
+      - name: Build Vite Production Application
+        run: npm run build
+
+      - name: Measure Building Stage
+        uses: green-coding-solutions/eco-ci-energy-estimation@v4
+        with:
+          task: get-measurement
+          label: 'building'
+          send-data: false
+        continue-on-error: true
+
+      - name: Display Eco CI Energy Results
+        uses: green-coding-solutions/eco-ci-energy-estimation@v4
+        with:
+          task: display-results
+          send-data: false
+        continue-on-error: true
